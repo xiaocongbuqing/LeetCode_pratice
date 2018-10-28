@@ -1,0 +1,56 @@
+/*题目描述
+
+Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+*/
+/**
+ * Definition for a point.
+ * struct Point {
+ *     int x;
+ *     int y;
+ *     Point() : x(0), y(0) {}
+ *     Point(int a, int b) : x(a), y(b) {}
+ * };
+ */
+ //整体思路,统计每个不同直线上有多少个点。
+class Solution {
+public:
+    int maxPoints(vector<Point> &points) {
+        if(points.size()<=0)return 0;
+        if(points.size()==1)return 1;
+        int max_value=0;
+        for(int i=0;i<points.size();++i)
+        {
+            map<double,int> count_p;//因为都通过points[i]这个点，所以只要斜率相同就是同一个点
+            int mark_add_all=0;//如果x1,y1都为0，则代表点重复，所有直线上的点都加1
+            int line_plumb=0;//计算垂直的直线上有多少个点
+            for(int j=i+1;j<points.size();++j)//因为两点确定一条直线,在points[i]之前的点已经和points[i]组合过，已经
+                                              //统计过该直线上有多少个点，不需要重复统计了。
+            {
+                double y1=points[j].y-points[i].y;
+                double x1=points[j].x-points[i].x;
+                if(x1==0&&y1==0)//点重复，所有直线上的点+1
+                {
+                    mark_add_all++;
+                }
+                else if(x1==0)//直线垂直,垂直计数+1
+                {
+                    line_plumb++;
+                }
+                else
+                {
+                    count_p[y1/x1]++;
+                }
+            }
+            for(auto m:count_p)
+            {
+                if(m.second>line_plumb)
+                {
+                    line_plumb=m.second;
+                }
+            }
+            line_plumb+=(mark_add_all+1);
+            max_value=max(max_value,line_plumb);
+        }
+        return max_value;
+    }
+};
