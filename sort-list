@@ -1,0 +1,93 @@
+/*
+题目描述
+
+Sort a linked list in O(n log n) time using constant space complexity.
+*/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ //先把整个链表划分为只有一个Node的链表，再两两合并。
+class Solution {
+public:
+    //这个是两两合并的过程，即归并排序中的并
+    ListNode* mergeList(vector<ListNode*> &vec)
+    {
+        while(vec.size()!=1)
+        {
+            vector<ListNode*> mark_vec;
+            int i;
+            for(i=0;i+1<vec.size();i+=2)
+            {
+                mark_vec.push_back(addList(vec[i],vec[i+1]));
+            }
+            if(i<vec.size())
+            {
+                mark_vec.push_back(vec[i]);
+            }
+            vec=mark_vec;
+        }
+        return vec[0];
+    }
+    //这个是把两个链表合并的操作
+    ListNode *addList(ListNode* left,ListNode* right)
+    {
+        if(left==NULL)return right;
+        if(right==NULL)return left;
+        ListNode* head=NULL,*pre=NULL;//head为头指针，pre为指向已合并链表的最后一个Node的指针，即指向上一个node的指针
+        if(left->val<=right->val)
+        {
+            head=left;
+            left=left->next;
+        }
+        else 
+        {
+            head=right;
+            right=right->next;
+        }
+        pre=head;
+        
+        while(left!=NULL&&right!=NULL)
+        {
+            if(left->val<=right->val)
+            {
+                pre->next=left;
+                pre=left;
+                left=left->next;
+            }
+            else{
+                pre->next=right;
+                pre=right;
+                right=right->next;
+            }
+        }
+        //不要忘记把多出来的链表部分加入到合并后的链表中
+        if(left!=NULL)
+        {
+            pre->next=left;
+        }
+        else if(right!=NULL)
+        {
+            pre->next=right;
+        }
+        
+        return head;
+    }
+    ListNode *sortList(ListNode *head) {
+        if(head==NULL)return NULL;
+        vector<ListNode*> mark_vec;
+        //把链表划分为单个node的链表
+        while(head!=NULL)
+        {
+            auto mark=head->next;
+            head->next=NULL;
+            mark_vec.push_back(head);
+            head=mark;
+        }
+        return mergeList(mark_vec);
+    }
+};
