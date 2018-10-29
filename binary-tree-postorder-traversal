@@ -1,0 +1,57 @@
+/*
+题目描述
+
+Given a binary tree, return the postorder traversal of its nodes' values.
+
+For example:
+Given binary tree{1,#,2,3},
+
+   1
+    \
+     2
+    /
+   3
+
+return[3,2,1].
+
+Note: Recursive solution is trivial, could you do it iteratively?
+*/
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ //用一个栈来存储各节点，以root,root->right,root->left的顺序，这样出栈就是root->left,root->right,root的顺序
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode *root) {
+        vector<int> res;
+        if(root==NULL)return res;
+        
+        stack<TreeNode*> s;
+        s.push(root);
+        TreeNode *pre=NULL;//用来记录上一个输出的结点指针，初始化为NULL
+        while(s.empty()!=true)
+        {
+            TreeNode *cur=s.top();
+            //如果结点左右孩子都为NULL，或者右孩子为空而且上次输出的结点是左孩子，或者上次输出的结点是右孩子，都会输出本结点
+            if((cur->right==NULL&&cur->left==NULL)||(cur->right==NULL&&pre==cur->left)
+              ||(cur->right==pre&&pre!=NULL))//注意因为pre初始化为NULL有可能出现该结点右孩子为NULL，且res为空的情况，此时要排除这种情况
+            {
+                s.pop();
+                res.push_back(cur->val);
+                pre=cur;//记录下本次操作的结点指针，并且直接跳过下面将左右孩子入栈的操作，因为本结点已经访问，它的孩子必然访问完
+                continue;
+            }
+            //按cur->right,cur->left的顺序将两个孩子结点压入栈
+            if(cur->right!=NULL)s.push(cur->right);
+            if(cur->left!=NULL)s.push(cur->left);
+        }
+        return res;
+    }
+};
