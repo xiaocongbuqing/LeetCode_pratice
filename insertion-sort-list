@@ -1,0 +1,55 @@
+/*
+题目描述
+
+Sort a linked list using insertion sort.
+*/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *insertSinglePoint(ListNode* head,ListNode* point)
+    {
+        if(head==NULL)
+        {
+            point->next=NULL;
+            return point;
+        }
+        if(point->val<=head->val)
+        {
+            point->next=head;
+            head=point;
+            return head;
+        }
+        else
+        {
+            ListNode* cur=head,*pre=NULL;
+            while(cur!=NULL&&point->val>cur->val)
+            {
+                pre=cur;
+                cur=cur->next;
+            }
+            point->next=cur;
+            pre->next=point;
+            return head;
+        }
+    }
+    ListNode *insertionSortList(ListNode *head) {
+        if(head==NULL)return NULL;
+        if(head->next==NULL)return head;
+        ListNode* res=NULL,*point=NULL;
+        while(head!=NULL)
+        {
+            point=head;
+            head=head->next;
+            point->next=NULL;
+            res=insertSinglePoint(res,point);
+        }
+        return res;
+    }
+};
