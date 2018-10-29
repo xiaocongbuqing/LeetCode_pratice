@@ -13,6 +13,7 @@ Sort a linked list using insertion sort.
  */
 class Solution {
 public:
+//将一个Node插入链表的操作
     ListNode *insertSinglePoint(ListNode* head,ListNode* point)
     {
         if(head==NULL)
@@ -39,6 +40,7 @@ public:
             return head;
         }
     }
+    //建立一个新的空链表，每次向其中插入一个Node
     ListNode *insertionSortList(ListNode *head) {
         if(head==NULL)return NULL;
         if(head->next==NULL)return head;
