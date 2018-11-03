@@ -1,0 +1,90 @@
+/*
+题目描述
+
+Given a singly linked list L: L 0→L 1→…→L n-1→L n,
+reorder it to: L 0→L n →L 1→L n-1→L 2→L n-2→…
+
+You must do this in-place without altering the nodes' values.
+
+For example,
+Given{1,2,3,4}, reorder it to{1,4,2,3}.
+*/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+//间隔合并两个单链表操作
+    ListNode* merge(ListNode* left,ListNode* right)
+    {
+        ListNode* head=left,*pre=left;
+        left=left->next;
+        while(left!=NULL||right!=NULL)
+        {
+            if(right!=NULL)
+            {
+                pre->next=right;
+                right=right->next;
+                pre=pre->next;
+            }
+            if(left!=NULL)
+            {
+                pre->next=left;
+                left=left->next;
+                pre=pre->next;
+            }
+        }
+        
+        return head;
+    }
+    //翻转链表操作
+    ListNode* reseverList(ListNode* head)
+    {
+        if(head==NULL)return NULL;
+        if(head->next==NULL)return head;
+        
+        ListNode* pre=NULL,*p1=head,*p2=head->next;
+        
+        while(p1!=NULL)
+        {
+            p1->next=pre;
+            pre=p2->next;
+            p2->next=p1;
+            if(pre==NULL)return p2;
+            if(pre->next==NULL)
+            {
+                pre->next=p2;
+                return pre;
+            }
+            p1=pre;
+            pre=p2;
+            p2=p1->next;
+        }
+        return NULL;
+    }
+    //首先用快慢指针找到中间结点，然后把后半部分翻转，然后再将前部分链表和后部分链表连接起来
+    void reorderList(ListNode *head) {
+        if(head==NULL||head->next==NULL||head->next->next==NULL)return;
+        ListNode* low=head,* fast=head;
+        while(fast->next!=NULL)
+        {
+            fast=fast->next;
+            if(fast->next!=NULL)
+            {
+                fast=fast->next;
+            }
+            else break;
+            low=low->next;//因为要将前半部分的最后一个node的next设置为空，所以low只指到后半部分链表的头结点的前一个结点
+        }
+        auto mark=low;
+        low=low->next;
+        mark->next=NULL;/将前半部分的链表的最后一个node设置为NULL
+        low=reseverList(low);//翻转后半部分
+        head=merge(head,low);//合并前半部分和后半部分
+    }
+};
