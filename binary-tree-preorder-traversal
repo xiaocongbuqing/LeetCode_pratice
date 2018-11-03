@@ -1,0 +1,47 @@
+/*
+题目描述
+
+Given a binary tree, return the preorder traversal of its nodes' values.
+
+For example:
+Given binary tree{1,#,2,3},
+
+   1
+    \
+     2
+    /
+   3
+
+return[1,2,3].
+
+Note: Recursive solution is trivial, could you do it iteratively?
+*/
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ //用stack来实现先序遍历
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode *root) {
+        vector<int> res;
+        if(root==NULL)return res;
+        
+        stack<TreeNode *> s;
+        s.push(root);
+        while(s.empty()!=true)
+        {
+            TreeNode* mark_ptr=s.top();
+            s.pop();
+            res.push_back(mark_ptr->val);
+            if(mark_ptr->right!=NULL)s.push(mark_ptr->right);
+            if(mark_ptr->left!=NULL)s.push(mark_ptr->left);
+        }
+        return res;
+    }
+};
